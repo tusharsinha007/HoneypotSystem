@@ -1,0 +1,44 @@
+# data/
+*.db
+*.sqlite
+
+# models/
+*.joblib
+*.pkl
+
+# keys/
+host_key
+host_key.pub
+
+# logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Docker
+*.env

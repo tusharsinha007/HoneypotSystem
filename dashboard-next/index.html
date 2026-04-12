@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LLMPot SOC Dashboard — AI-driven SSH Honeypot monitoring platform with real-time threat analytics, attack maps, and ML insights." />
+  <title>LLMPot — SOC Command Center</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+  <!-- Leaflet.js -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="app-wrapper" id="app">
+
+    <!-- ═══════════════ SIDEBAR ═══════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2L26 8V20L14 26L2 20V8L14 2Z" fill="url(#hexGrad)" />
+            <path d="M14 7L20 10.5V17.5L14 21L8 17.5V10.5L14 7Z" fill="rgba(255,255,255,0.15)" />
+            <text x="14" y="16" text-anchor="middle" fill="white" font-size="8" font-weight="700" font-family="JetBrains Mono">HP</text>
+            <defs>
+              <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3B82F6"/>
+                <stop offset="100%" stop-color="#8B5CF6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">LLMPot</span>
+          <span class="logo-sub">SOC Command Center</span>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i data-lucide="panel-left-close"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+          <div class="nav-indicator"></div>
+        </a>
+        <a href="#" class="nav-item" data-page="logs" id="nav-logs">
+          <i data-lucide="scroll-text"></i>
+          <span>Honeypot Logs</span>
+          <span class="nav-badge danger">247</span>
+        </a>
+        <a href="#" class="nav-item" data-page="threats" id="nav-threats">
+          <i data-lucide="shield-alert"></i>
+          <span>Threat Analysis</span>
+        </a>
+        <a href="#" class="nav-item" data-page="map" id="nav-map">
+          <i data-lucide="globe"></i>
+          <span>Attack Map</span>
+          <span class="nav-badge warning">12</span>
+        </a>
+        <div class="nav-section-label">INTELLIGENCE</div>
+        <a href="#" class="nav-item" data-page="ml" id="nav-ml">
+          <i data-lucide="brain-circuit"></i>
+          <span>ML Insights</span>
+        </a>
+        <a href="#" class="nav-item" data-page="alerts" id="nav-alerts">
+          <i data-lucide="bell-ring"></i>
+          <span>Alerts</span>
+          <span class="nav-badge danger">5</span>
+        </a>
+        <div class="nav-section-label">SYSTEM</div>
+        <a href="#" class="nav-item" data-page="settings" id="nav-settings">
+          <i data-lucide="settings-2"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status">
+          <div class="status-dot pulse-green"></div>
+          <span>Honeypot LIVE</span>
+        </div>
+        <div class="sidebar-version">v1.0.0 — Port 2222</div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+    <div class="main-content" id="mainContent">
+
+      <!-- ═══════════════ TOP NAVBAR ═══════════════ -->
+      <header class="topbar" role="banner">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="search-wrapper">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="search" class="search-input" id="globalSearch" placeholder="Search IPs, countries, commands..." autocomplete="off" />
+            <kbd class="search-kbd">⌘K</kbd>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="topbar-badge-wrapper" title="Live session count">
+            <div class="live-indicator">
+              <span class="pulse-dot"></span>
+              <span>LIVE</span>
+              <span class="live-count" id="liveCount">8 sessions</span>
+            </div>
+          </div>
+
+          <button class="topbar-icon-btn" id="notifBtn" aria-label="Notifications" title="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge" id="notifBadge">5</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+            <div class="toggle-track">
+              <i data-lucide="moon" class="toggle-dark-icon"></i>
+              <i data-lucide="sun" class="toggle-light-icon"></i>
+              <div class="toggle-thumb"></div>
+            </div>
+          </button>
+
+          <div class="user-profile" id="userProfile">
+            <div class="avatar">
+              <span>SO</span>
+            </div>
+            <div class="user-info">
+              <span class="user-name">SOC Analyst</span>
+              <span class="user-role">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" class="avatar-chevron"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- ═══════════════ PAGE CONTENT ═══════════════ -->
+      <div class="page-container" id="pageContainer">
+
+        <!-- DASHBOARD PAGE -->
+        <div class="page active" id="page-dashboard">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Security Operations Center</h1>
+              <p class="page-subtitle">Real-time honeypot telemetry & threat intelligence</p>
+            </div>
+            <div class="page-actions">
+              <span class="last-updated" id="lastUpdated">Updated just now</span>
+              <button class="btn btn-secondary" id="exportBtn">
+                <i data-lucide="download"></i> Export
+              </button>
+              <button class="btn btn-primary" id="refreshBtn">
+                <i data-lucide="refresh-cw"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI CARDS -->
+          <div class="metrics-grid">
+            <div class="metric-card" id="card-attacks">
+              <div class="metric-header">
+                <span class="metric-label">Total Attacks</span>
+                <div class="metric-icon blue">
+                  <i data-lucide="zap"></i>
+                </div>
+              </div>
+              <div class="metric-value" data-target="24871" id="metric-attacks">0</div>
+              <div class="metric-footer">
+                <span class="metric-trend up"><i data-lucide="trending-up"></i> +18.2%</span>
+                <span class="metric-period">vs last 24h</span>
+              </div>
+              <div class="metric-sparkline">
+                <canvas id="sparkline-attacks" height="40"></canvas>
+              </div>
+            </div>
+
+            <div class="metric-card" id="card-sessions">
+              <div class="metric-header">
+                <span class="metric-label">Active Sessions</span>
+                <div class="metric-icon purple">
+                  <i data-lucide="terminal"></i>
+                </div>
+              </div>
+              <div class="metric-value pulse-value" data-target="8" id="metric-sessions">0</div>
+              <div class="metric-footer">
+                <span class="metric-trend up"><i data-lucide="trending-up"></i> 3 new</span>
+                <span class="metric-period">last 5 minutes</span>
+              </div>
+              <div class="metric-sparkline">
+                <canvas id="sparkline-sessions" height="40"></canvas>
+              </div>
+            </div>
+
+            <div class="metric-card" id="card-risk">
+              <div class="metric-header">
+                <span class="metric-label">Risk Score</span>
+                <div class="metric-icon red">
+                  <i data-lucide="shield-x"></i>
+                </div>
+              </div>
+              <div class="metric-value" data-target="87" id="metric-risk">0</div>
+              <div class="risk-bar-wrapper">
+                <div class="risk-bar">
+                  <div class="risk-fill" id="riskFill" style="width: 0%"></div>
+                </div>
+                <span class="risk-label">HIGH</span>
+              </div>
+              <div class="metric-footer">
+                <span class="metric-trend down"><i data-lucide="trending-down"></i> -4pts</span>
+                <span class="metric-period">vs yesterday</span>
+              </div>
+            </div>
+
+            <div class="metric-card" id="card-ips">
+              <div class="metric-header">
+                <span class="metric-label">Unique IPs</span>
+                <div class="metric-icon cyan">
+                  <i data-lucide="network"></i>
+                </div>
+              </div>
+              <div class="metric-value" data-target="1432" id="metric-ips">0</div>
+              <div class="metric-footer">
+                <span class="metric-trend up"><i data-lucide="trending-up"></i> +89 new</span>
+                <span class="metric-period">last 24 hours</span>
+              </div>
+              <div class="metric-sparkline">
+                <canvas id="sparkline-ips" height="40"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN GRID -->
+          <div class="dashboard-grid">
+
+            <!-- ATTACK MAP -->
+            <div class="grid-card map-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="globe-2" class="card-icon cyan"></i>
+                  <h2 class="card-title">Global Attack Origins</h2>
+                  <span class="live-pill">● LIVE</span>
+                </div>
+                <div class="card-actions">
+                  <button class="icon-btn" title="Fullscreen map" id="mapFullscreen"><i data-lucide="maximize-2"></i></button>
+                </div>
+              </div>
+              <div class="map-container" id="attackMap"></div>
+              <div class="map-legend">
+                <div class="legend-item"><span class="legend-dot red-dot"></span> Critical</div>
+                <div class="legend-item"><span class="legend-dot yellow-dot"></span> Warning</div>
+                <div class="legend-item"><span class="legend-dot green-dot"></span> Safe</div>
+              </div>
+            </div>
+
+            <!-- ALERTS PANEL -->
+            <div class="grid-card alerts-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="bell-ring" class="card-icon red"></i>
+                  <h2 class="card-title">Live Alerts</h2>
+                  <span class="badge-count" id="alertsBadge">5</span>
+                </div>
+                <button class="icon-btn" title="Clear alerts"><i data-lucide="trash-2"></i></button>
+              </div>
+              <div class="alerts-feed" id="alertsFeed">
+                <!-- Alerts injected by JS -->
+              </div>
+            </div>
+
+            <!-- CHARTS ROW -->
+            <div class="grid-card chart-card wide-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="activity" class="card-icon blue"></i>
+                  <h2 class="card-title">Attack Frequency</h2>
+                </div>
+                <div class="card-actions">
+                  <div class="tab-group">
+                    <button class="tab-btn active" data-range="7d">7D</button>
+                    <button class="tab-btn" data-range="30d">30D</button>
+                    <button class="tab-btn" data-range="90d">90D</button>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="attackTrendChart"></canvas>
+              </div>
+            </div>
+
+            <div class="grid-card chart-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="bar-chart-3" class="card-icon purple"></i>
+                  <h2 class="card-title">Attack Categories</h2>
+                </div>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="attackCategoryChart"></canvas>
+              </div>
+            </div>
+
+            <div class="grid-card chart-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="pie-chart" class="card-icon cyan"></i>
+                  <h2 class="card-title">Severity Distribution</h2>
+                </div>
+              </div>
+              <div class="chart-wrapper donut-wrapper">
+                <canvas id="severityChart"></canvas>
+                <div class="donut-center">
+                  <span class="donut-value">24.8k</span>
+                  <span class="donut-label">total</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- LOGS TABLE -->
+            <div class="grid-card logs-card wide-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="scroll-text" class="card-icon blue"></i>
+                  <h2 class="card-title">Recent Sessions</h2>
+                </div>
+                <div class="card-actions">
+                  <div class="search-filter">
+                    <i data-lucide="filter"></i>
+                    <input type="text" placeholder="Filter logs..." id="logsFilter" class="filter-input" />
+                  </div>
+                  <button class="icon-btn" title="Export logs"><i data-lucide="download"></i></button>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table class="logs-table" id="logsTable">
+                  <thead>
+                    <tr>
+                      <th><span>IP Address</span> <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                      <th><span>Country</span></th>
+                      <th><span>Username</span></th>
+                      <th><span>Last Command</span></th>
+                      <th><span>Status</span></th>
+                      <th><span>Timestamp</span></th>
+                      <th><span>Actions</span></th>
+                    </tr>
+                  </thead>
+                  <tbody id="logsTableBody">
+                    <!-- Rows injected by JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-footer">
+                <span class="table-info" id="tableInfo">Showing 15 of 247 sessions</span>
+                <div class="pagination" id="pagination"></div>
+              </div>
+            </div>
+
+            <!-- ML INSIGHTS PANEL -->
+            <div class="grid-card ml-card wide-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="brain-circuit" class="card-icon purple"></i>
+                  <h2 class="card-title">ML Insights — K-Means Clustering</h2>
+                  <span class="badge-new">AI</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="retrainBtn">
+                  <i data-lucide="refresh-ccw"></i> Retrain Model
+                </button>
+              </div>
+              <div class="ml-grid">
+                <div class="ml-chart-container">
+                  <canvas id="clusterChart"></canvas>
+                </div>
+                <div class="cluster-legend">
+                  <h3>Behavioral Groups</h3>
+                  <div class="cluster-items" id="clusterItems">
+                    <!-- Injected by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- LOGS PAGE -->
+        <div class="page" id="page-logs">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Honeypot Logs</h1>
+              <p class="page-subtitle">Full session log browser with advanced filtering</p>
+            </div>
+          </div>
+          <div class="grid-card" style="margin-top: 1.5rem">
+            <div class="card-header">
+              <div class="card-title-group">
+                <i data-lucide="scroll-text" class="card-icon blue"></i>
+                <h2 class="card-title">All Sessions</h2>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="logs-table">
+                <thead>
+                  <tr>
+                    <th>IP Address</th><th>Country</th><th>Username</th>
+                    <th>Last Command</th><th>Status</th><th>Timestamp</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="fullLogsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- THREATS PAGE -->
+        <div class="page" id="page-threats">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Threat Analysis</h1>
+              <p class="page-subtitle">Deep-dive threat intelligence and pattern analysis</p>
+            </div>
+          </div>
+          <div class="threats-grid">
+            <div class="grid-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="bar-chart-3" class="card-icon purple"></i>
+                  <h2 class="card-title">Top Attack Vectors</h2>
+                </div>
+              </div>
+              <div class="chart-wrapper"><canvas id="vectorChart"></canvas></div>
+            </div>
+            <div class="grid-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="map-pin" class="card-icon red"></i>
+                  <h2 class="card-title">Top Source Countries</h2>
+                </div>
+              </div>
+              <div class="country-list" id="countryList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAP PAGE (fullscreen map) -->
+        <div class="page" id="page-map">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Global Attack Map</h1>
+              <p class="page-subtitle">Live geolocation of active threats worldwide</p>
+            </div>
+          </div>
+          <div class="grid-card" style="margin-top: 1.5rem; height: calc(100vh - 240px);">
+            <div id="fullAttackMap" style="height:100%; border-radius: 12px; overflow:hidden;"></div>
+          </div>
+        </div>
+
+        <!-- ML PAGE -->
+        <div class="page" id="page-ml">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">ML Insights</h1>
+              <p class="page-subtitle">Machine learning behavioral analysis and session clustering</p>
+            </div>
+          </div>
+          <div class="ml-full-grid">
+            <div class="grid-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="brain-circuit" class="card-icon purple"></i>
+                  <h2 class="card-title">Session Clusters</h2>
+                </div>
+              </div>
+              <div class="chart-wrapper" style="height:400px"><canvas id="mlScatterFull"></canvas></div>
+            </div>
+            <div class="grid-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="alert-triangle" class="card-icon red"></i>
+                  <h2 class="card-title">Suspicious Sessions</h2>
+                </div>
+              </div>
+              <div class="suspicious-list" id="suspiciousList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALERTS PAGE -->
+        <div class="page" id="page-alerts">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Security Alerts</h1>
+              <p class="page-subtitle">All security events requiring attention</p>
+            </div>
+          </div>
+          <div class="grid-card" style="margin-top: 1.5rem;">
+            <div class="alerts-full-list" id="alertsFullList"></div>
+          </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div class="page" id="page-settings">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Settings</h1>
+              <p class="page-subtitle">Configure dashboard preferences and honeypot parameters</p>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="grid-card settings-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="palette" class="card-icon blue"></i>
+                  <h2 class="card-title">Appearance</h2>
+                </div>
+              </div>
+              <div class="settings-section">
+                <div class="setting-row">
+                  <div><strong>Theme</strong><p>Choose your preferred color scheme</p></div>
+                  <button class="theme-toggle-lg" id="themeToggleLg">
+                    <i data-lucide="moon"></i> Dark Mode
+                  </button>
+                </div>
+                <div class="setting-row">
+                  <div><strong>Auto-refresh interval</strong><p>How often the dashboard updates</p></div>
+                  <select class="setting-select" id="refreshInterval">
+                    <option value="5">5 seconds</option>
+                    <option value="10" selected>10 seconds</option>
+                    <option value="30">30 seconds</option>
+                    <option value="60">1 minute</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="grid-card settings-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <i data-lucide="server" class="card-icon purple"></i>
+                  <h2 class="card-title">Honeypot Config</h2>
+                </div>
+              </div>
+              <div class="settings-section">
+                <div class="setting-row">
+                  <div><strong>Listen Port</strong><p>SSH honeypot port</p></div>
+                  <input class="setting-input" value="2222" readonly />
+                </div>
+                <div class="setting-row">
+                  <div><strong>Bind Address</strong><p>Network interface</p></div>
+                  <input class="setting-input" value="0.0.0.0" readonly />
+                </div>
+                <div class="setting-row">
+                  <div><strong>Max Connections</strong><p>Concurrent session limit</p></div>
+                  <input class="setting-input" value="50" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /page-container -->
+    </div><!-- /main-content -->
+  </div><!-- /app-wrapper -->
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="notif-panel" id="notifPanel">
+    <div class="notif-header">
+      <h3>Notifications</h3>
+      <button id="clearNotifs" class="text-btn">Clear all</button>
+    </div>
+    <div class="notif-list" id="notifList"></div>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Main JS -->
+  <script src="scripts/data.js"></script>
+  <script src="scripts/charts.js"></script>
+  <script src="scripts/map.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>

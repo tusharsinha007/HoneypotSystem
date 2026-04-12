@@ -1,0 +1,68 @@
+# ═══════════════════════════════════════════════════
+# LLMPot — Docker Compose
+# Orchestrates honeypot + dashboard with shared storage
+# ═══════════════════════════════════════════════════
+
+version: "3.8"
+
+services:
+  honeypot:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: llmpot-honeypot
+    restart: unless-stopped
+    ports:
+      - "2222:2222"     # SSH honeypot (change to 22:2222 for production)
+    volumes:
+      - honeypot-data:/app/data
+      - honeypot-logs:/app/logs
+      - honeypot-models:/app/models
+      - honeypot-keys:/app/keys
+    environment:
+      - LLMPOT_SSH_HOST=0.0.0.0
+      - LLMPOT_SSH_PORT=2222
+      - LLMPOT_LOG_LEVEL=INFO
+    networks:
+      - honeypot-net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    security_opt:
+      - no-new-privileges:true
+
+  dashboard:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: llmpot-dashboard
+    restart: unless-stopped
+    command: >
+      streamlit run dashboard/app.py
+      --server.port=8501
+      --server.headless=true
+      --server.address=0.0.0.0
+      --browser.gatherUsageStats=false
+    ports:
+      - "8501:8501"     # Dashboard
+    volumes:
+      - honeypot-data:/app/data:ro
+      - honeypot-models:/app/models:ro
+    environment:
+      - LLMPOT_LOG_LEVEL=INFO
+    networks:
+      - honeypot-net
+    depends_on:
+      - honeypot
+
+volumes:
+  honeypot-data:
+  honeypot-logs:
+  honeypot-models:
+  honeypot-keys:
+
+networks:
+  honeypot-net:
+    driver: bridge

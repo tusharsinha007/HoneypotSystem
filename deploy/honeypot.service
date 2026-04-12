@@ -1,0 +1,34 @@
+[Unit]
+Description=LLMPot SSH Honeypot
+After=network.target
+Documentation=https://github.com/anonymous-1889/LLMPot
+
+[Service]
+Type=simple
+User=honeypot
+Group=honeypot
+WorkingDirectory=/opt/llmpot
+Environment="LLMPOT_SSH_PORT=22"
+ExecStart=/opt/llmpot/venv/bin/python main.py
+Restart=always
+RestartSec=10
+TimeoutStopSec=15
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=llmpot
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/opt/llmpot/data /opt/llmpot/logs /opt/llmpot/models
+
+[Install]
+WantedBy=multi-user.target

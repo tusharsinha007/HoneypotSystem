@@ -1,0 +1,270 @@
+{
+  "/": {
+    "type": "dir",
+    "children": {
+      "bin": {
+        "type": "dir",
+        "children": {
+          "bash": {"type": "file", "size": 1396520, "perms": "-rwxr-xr-x"},
+          "cat": {"type": "file", "size": 35280, "perms": "-rwxr-xr-x"},
+          "chmod": {"type": "file", "size": 64448, "perms": "-rwxr-xr-x"},
+          "chown": {"type": "file", "size": 72640, "perms": "-rwxr-xr-x"},
+          "cp": {"type": "file", "size": 153240, "perms": "-rwxr-xr-x"},
+          "date": {"type": "file", "size": 100568, "perms": "-rwxr-xr-x"},
+          "df": {"type": "file", "size": 88280, "perms": "-rwxr-xr-x"},
+          "echo": {"type": "file", "size": 35280, "perms": "-rwxr-xr-x"},
+          "grep": {"type": "file", "size": 219456, "perms": "-rwxr-xr-x"},
+          "hostname": {"type": "file", "size": 18440, "perms": "-rwxr-xr-x"},
+          "kill": {"type": "file", "size": 22872, "perms": "-rwxr-xr-x"},
+          "ln": {"type": "file", "size": 67808, "perms": "-rwxr-xr-x"},
+          "ls": {"type": "file", "size": 142144, "perms": "-rwxr-xr-x"},
+          "mkdir": {"type": "file", "size": 80600, "perms": "-rwxr-xr-x"},
+          "mv": {"type": "file", "size": 138048, "perms": "-rwxr-xr-x"},
+          "ping": {"type": "file", "size": 72776, "perms": "-rwxr-xr-x"},
+          "ps": {"type": "file", "size": 137688, "perms": "-rwxr-xr-x"},
+          "pwd": {"type": "file", "size": 35280, "perms": "-rwxr-xr-x"},
+          "rm": {"type": "file", "size": 72192, "perms": "-rwxr-xr-x"},
+          "sh": {"type": "file", "size": 125688, "perms": "-rwxr-xr-x"},
+          "su": {"type": "file", "size": 72824, "perms": "-rwsr-xr-x"},
+          "tar": {"type": "file", "size": 502568, "perms": "-rwxr-xr-x"},
+          "touch": {"type": "file", "size": 100568, "perms": "-rwxr-xr-x"},
+          "uname": {"type": "file", "size": 35280, "perms": "-rwxr-xr-x"},
+          "wget": {"type": "file", "size": 549512, "perms": "-rwxr-xr-x"}
+        }
+      },
+      "boot": {
+        "type": "dir",
+        "children": {
+          "vmlinuz-5.15.0-91-generic": {"type": "file", "size": 11689984, "perms": "-rw-------"},
+          "initrd.img-5.15.0-91-generic": {"type": "file", "size": 62521344, "perms": "-rw-------"},
+          "grub": {
+            "type": "dir",
+            "children": {
+              "grub.cfg": {"type": "file", "size": 8192, "perms": "-r--r--r--"}
+            }
+          }
+        }
+      },
+      "dev": {
+        "type": "dir",
+        "children": {
+          "null": {"type": "file", "size": 0, "perms": "crw-rw-rw-"},
+          "zero": {"type": "file", "size": 0, "perms": "crw-rw-rw-"},
+          "random": {"type": "file", "size": 0, "perms": "crw-rw-rw-"},
+          "sda": {"type": "file", "size": 0, "perms": "brw-rw----"},
+          "sda1": {"type": "file", "size": 0, "perms": "brw-rw----"},
+          "tty": {"type": "file", "size": 0, "perms": "crw-rw-rw-"}
+        }
+      },
+      "etc": {
+        "type": "dir",
+        "children": {
+          "hostname": {"type": "file", "size": 14, "perms": "-rw-r--r--"},
+          "hosts": {"type": "file", "size": 221, "perms": "-rw-r--r--"},
+          "os-release": {"type": "file", "size": 393, "perms": "-rw-r--r--"},
+          "passwd": {"type": "file", "size": 1747, "perms": "-rw-r--r--"},
+          "shadow": {"type": "file", "size": 1209, "perms": "-rw-r-----"},
+          "group": {"type": "file", "size": 789, "perms": "-rw-r--r--"},
+          "resolv.conf": {"type": "file", "size": 82, "perms": "-rw-r--r--"},
+          "fstab": {"type": "file", "size": 510, "perms": "-rw-r--r--"},
+          "crontab": {"type": "file", "size": 1042, "perms": "-rw-r--r--"},
+          "ssh": {
+            "type": "dir",
+            "children": {
+              "sshd_config": {"type": "file", "size": 3287, "perms": "-rw-r--r--"},
+              "ssh_host_rsa_key.pub": {"type": "file", "size": 569, "perms": "-rw-r--r--"}
+            }
+          },
+          "apt": {
+            "type": "dir",
+            "children": {
+              "sources.list": {"type": "file", "size": 441, "perms": "-rw-r--r--"}
+            }
+          },
+          "systemd": {
+            "type": "dir",
+            "children": {
+              "system": {"type": "dir", "children": {}}
+            }
+          },
+          "network": {
+            "type": "dir",
+            "children": {
+              "interfaces": {"type": "file", "size": 192, "perms": "-rw-r--r--"}
+            }
+          }
+        }
+      },
+      "home": {
+        "type": "dir",
+        "children": {
+          "admin": {
+            "type": "dir",
+            "children": {
+              ".bashrc": {"type": "file", "size": 3771, "perms": "-rw-r--r--"},
+              ".profile": {"type": "file", "size": 807, "perms": "-rw-r--r--"},
+              ".bash_history": {"type": "file", "size": 456, "perms": "-rw-------"},
+              "Documents": {"type": "dir", "children": {}},
+              "Downloads": {"type": "dir", "children": {}},
+              "scripts": {
+                "type": "dir",
+                "children": {
+                  "backup.sh": {"type": "file", "size": 245, "perms": "-rwxr-xr-x"},
+                  "cleanup.sh": {"type": "file", "size": 189, "perms": "-rwxr-xr-x"}
+                }
+              }
+            }
+          }
+        }
+      },
+      "opt": {
+        "type": "dir",
+        "children": {}
+      },
+      "proc": {
+        "type": "dir",
+        "children": {
+          "cpuinfo": {"type": "file", "size": 0, "perms": "-r--r--r--"},
+          "meminfo": {"type": "file", "size": 0, "perms": "-r--r--r--"},
+          "version": {"type": "file", "size": 0, "perms": "-r--r--r--"},
+          "uptime": {"type": "file", "size": 0, "perms": "-r--r--r--"},
+          "loadavg": {"type": "file", "size": 0, "perms": "-r--r--r--"},
+          "self": {"type": "dir", "children": {}}
+        }
+      },
+      "root": {
+        "type": "dir",
+        "children": {
+          ".bashrc": {"type": "file", "size": 3106, "perms": "-rw-r--r--"},
+          ".profile": {"type": "file", "size": 161, "perms": "-rw-r--r--"},
+          ".bash_history": {"type": "file", "size": 312, "perms": "-rw-------"},
+          ".ssh": {
+            "type": "dir",
+            "children": {
+              "authorized_keys": {"type": "file", "size": 0, "perms": "-rw-------"}
+            }
+          }
+        }
+      },
+      "run": {
+        "type": "dir",
+        "children": {
+          "sshd.pid": {"type": "file", "size": 5, "perms": "-rw-r--r--"}
+        }
+      },
+      "sbin": {
+        "type": "dir",
+        "children": {
+          "ifconfig": {"type": "file", "size": 72752, "perms": "-rwxr-xr-x"},
+          "iptables": {"type": "file", "size": 126000, "perms": "-rwxr-xr-x"},
+          "reboot": {"type": "file", "size": 14408, "perms": "-rwxr-xr-x"},
+          "shutdown": {"type": "file", "size": 14408, "perms": "-rwxr-xr-x"}
+        }
+      },
+      "srv": {
+        "type": "dir",
+        "children": {}
+      },
+      "sys": {
+        "type": "dir",
+        "children": {}
+      },
+      "tmp": {
+        "type": "dir",
+        "children": {
+          ".ICE-unix": {"type": "dir", "children": {}},
+          ".X11-unix": {"type": "dir", "children": {}}
+        }
+      },
+      "usr": {
+        "type": "dir",
+        "children": {
+          "bin": {
+            "type": "dir",
+            "children": {
+              "curl": {"type": "file", "size": 248160, "perms": "-rwxr-xr-x"},
+              "gcc": {"type": "file", "size": 1052688, "perms": "-rwxr-xr-x"},
+              "git": {"type": "file", "size": 3487240, "perms": "-rwxr-xr-x"},
+              "make": {"type": "file", "size": 178608, "perms": "-rwxr-xr-x"},
+              "nano": {"type": "file", "size": 285456, "perms": "-rwxr-xr-x"},
+              "python3": {"type": "file", "size": 5765408, "perms": "-rwxr-xr-x"},
+              "ssh": {"type": "file", "size": 911800, "perms": "-rwxr-xr-x"},
+              "top": {"type": "file", "size": 131784, "perms": "-rwxr-xr-x"},
+              "vi": {"type": "file", "size": 1171768, "perms": "-rwxr-xr-x"},
+              "wget": {"type": "file", "size": 549512, "perms": "-rwxr-xr-x"},
+              "whoami": {"type": "file", "size": 16592, "perms": "-rwxr-xr-x"}
+            }
+          },
+          "lib": {
+            "type": "dir",
+            "children": {}
+          },
+          "local": {
+            "type": "dir",
+            "children": {
+              "bin": {"type": "dir", "children": {}},
+              "lib": {"type": "dir", "children": {}},
+              "share": {"type": "dir", "children": {}}
+            }
+          },
+          "share": {
+            "type": "dir",
+            "children": {}
+          }
+        }
+      },
+      "var": {
+        "type": "dir",
+        "children": {
+          "log": {
+            "type": "dir",
+            "children": {
+              "auth.log": {"type": "file", "size": 24576, "perms": "-rw-r-----"},
+              "syslog": {"type": "file", "size": 65536, "perms": "-rw-r-----"},
+              "dmesg": {"type": "file", "size": 32768, "perms": "-rw-r-----"},
+              "kern.log": {"type": "file", "size": 16384, "perms": "-rw-r-----"},
+              "apt": {
+                "type": "dir",
+                "children": {
+                  "history.log": {"type": "file", "size": 8192, "perms": "-rw-r--r--"}
+                }
+              }
+            }
+          },
+          "tmp": {
+            "type": "dir",
+            "children": {}
+          },
+          "cache": {
+            "type": "dir",
+            "children": {
+              "apt": {
+                "type": "dir",
+                "children": {
+                  "archives": {"type": "dir", "children": {}}
+                }
+              }
+            }
+          },
+          "mail": {
+            "type": "dir",
+            "children": {
+              "root": {"type": "file", "size": 0, "perms": "-rw-rw----"}
+            }
+          },
+          "www": {
+            "type": "dir",
+            "children": {
+              "html": {
+                "type": "dir",
+                "children": {
+                  "index.html": {"type": "file", "size": 10918, "perms": "-rw-r--r--"}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
