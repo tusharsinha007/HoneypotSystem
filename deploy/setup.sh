@@ -57,6 +57,17 @@ apt update && apt upgrade -y
 apt install -y python3 python3-pip python3-venv git ufw fail2ban
 
 echo -e "${CYAN}[*] Step 2: Move real SSH to port ${REAL_SSH_PORT}${NC}"
+
+echo -e "${YELLOW}⚠️  AZURE WARNING ⚠️${NC}"
+echo -e "If you are deploying on Microsoft Azure, you MUST open port ${REAL_SSH_PORT}"
+echo -e "in your Network Security Group (NSG) via the Azure Portal BEFORE proceeding."
+echo -e "Otherwise, you will lock yourself out of this VM!"
+read -p "Have you updated your Azure NSG or are you not using Azure? (yes/no): " NSG_ACCEPT
+if [ "$NSG_ACCEPT" != "yes" ]; then
+    echo "Setup cancelled. Please update your NSG rules and try again."
+    exit 0
+fi
+
 # Backup sshd_config
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
 
@@ -81,7 +92,7 @@ if [ -f "main.py" ]; then
     cp -r . "$HONEYPOT_DIR/"
 else
     echo -e "${YELLOW}[*] Cloning from git...${NC}"
-    git clone https://github.com/anonymous-1889/LLMPot.git "$HONEYPOT_DIR" || {
+    git clone https://github.com/tusharsinha007/Honeypot_System.git "$HONEYPOT_DIR" || {
         echo -e "${RED}[!] Failed to clone. Copy files manually to ${HONEYPOT_DIR}${NC}"
         exit 1
     }
@@ -112,6 +123,10 @@ ufw --force reset
 # Default policies
 ufw default deny incoming
 ufw default allow outgoing
+
+# Azure Agent Compatibility
+ufw allow from 168.63.129.16 to any comment 'Azure Agent'
+ufw allow to 168.63.129.16 comment 'Azure Agent'
 
 # Allow management SSH
 ufw allow "${REAL_SSH_PORT}/tcp"

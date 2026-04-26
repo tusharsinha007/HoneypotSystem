@@ -26,6 +26,10 @@ iptables -P OUTPUT ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 iptables -A OUTPUT -o lo -j ACCEPT
 
+# Azure Agent Compatibility
+iptables -A INPUT -s 168.63.129.16 -j ACCEPT
+iptables -A OUTPUT -d 168.63.129.16 -j ACCEPT
+
 # Allow established connections
 iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
